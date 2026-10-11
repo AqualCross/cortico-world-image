@@ -1,0 +1,23 @@
+# 依赖 / 构建产物
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# 运行期状态：补丁器写的状态文件、备份、数据目录
+.chat-image-patch.json
+*.coopanion-orig
+data/
+images/
+index.json
+
+# 自检脚本的临时产物
+scratch/
+*.tmp
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

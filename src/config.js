@@ -1,0 +1,196 @@
+/**
+ * 图片工坊的配置段与文案。
+ *
+ * 段名是 `config.json` 的 `worlds.image`。控制台热改就地写这个对象，
+ * World 每次用时现读，所以这里只有默认值与 schema，不持有副本。
+ */
+
+export const ID = 'image';
+export const LABEL = '图片工坊';
+
+/** `worlds.image` 段的默认值；键名与 CONFIG_GROUP 里的路径一一对应。 */
+export const DEFAULTS = Object.freeze({
+  enabled: false,
+  baseUrl: 'https://api.openai.com/v1',
+  apiKeySecret: 'IMAGE_API_KEY',
+  model: 'gpt-image-1',
+  size: '1024x1024',
+  quality: 'auto',
+  format: 'png',
+  timeoutMs: 180000,
+  saveDir: '',
+  keep: 200,
+  pushToConsole: true,
+});
+
+const ZH = {
+  label: '图片工坊',
+  lamp: '画图接口',
+  badgeWorks: '作品',
+  badgeKey: '密钥',
+  badgePatch: '发图补丁',
+  patchOk: '在',
+  patchPending: '待重启',
+  patchMissing: (n) => `缺 ${n} 处`,
+  patchOff: '没打上',
+  patchUnchecked: '未检查',
+  patchRestored: '已还原',
+  keySet: '已填',
+  keyUnset: '未填',
+  panelGalleryTitle: '作品',
+  panelGalleryDesc: '桌宠画过的图。点图看大图，复制路径就能转发给别的渠道。',
+  panelStatusTitle: '状态',
+  panelStatusDesc: '接口、密钥与磁盘占用。改完即用，不必重启。',
+  promptDocTitle: '环境说明（图片工坊）',
+  promptDocDesc: '这段文字随环境提示词一起交给桌宠，告诉它画图这件事的规矩。',
+  varDir: '图片保存目录的绝对路径。',
+  varReady: '一句话说明当前能不能画图（缺密钥、缺地址或可用）。',
+  readyOk: (model) => `可用：${model}`,
+  readyNoBase: '未配置接口地址',
+  readyNoKey: '未填密钥',
+  timeout: (ms) => `${Math.round(ms / 1000)} 秒无响应就放弃`,
+  config: {
+    title: '图片工坊',
+    enabled: '启用图片工坊',
+    enabledDesc: '开启后桌宠才拿到 image_draw / image_edit / image_gallery / image_show 四个工具。',
+    baseUrl: '接口地址',
+    baseUrlDesc: 'OpenAI 兼容的图片接口根地址，例如 https://api.openai.com/v1、https://api.siliconflow.cn/v1、https://open.bigmodel.cn/api/paas/v4。',
+    keyName: '密钥变量名',
+    keyNameDesc: '密钥存在部署 .env 里的变量名，默认 IMAGE_API_KEY。在「状态」页填密钥本身。',
+    model: '模型',
+    modelDesc: '例如 gpt-image-1、dall-e-3、flux.1-schnell、cogview-3-flash、doubao-seedream-3-0-t2i-250415。',
+    size: '尺寸',
+    sizeDesc: '例如 1024x1024、1024x1536、1536x1024、1792x1024。留空或 auto 交给服务端。',
+    quality: '画质',
+    qualityDesc: '各家取值不同：low / medium / high 或 standard / hd。auto 表示不发这个参数。',
+    format: '保存格式',
+    formatDesc: '接口没给格式时按这个存盘。',
+    timeout: '超时',
+    timeoutDesc: '单次画图的等待上限，慢模型调大。',
+    saveDir: '保存目录',
+    saveDirDesc: '留空则存在本插件数据目录的 images/ 下。',
+    keep: '保留张数',
+    keepDesc: '超出后自动删掉最旧的图，0 表示不清理。',
+    push: '推送到作品页',
+    pushDesc: '画完实时显示在「作品」页；关掉只是不推送，图照样存盘。',
+  },
+};
+
+const EN = {
+  label: 'Image Studio',
+  lamp: 'Image API',
+  badgeWorks: 'Pictures',
+  badgeKey: 'API key',
+  badgePatch: 'Chat images',
+  patchOk: 'in place',
+  patchPending: 'restart needed',
+  patchMissing: (n) => `${n} missing`,
+  patchOff: 'not applied',
+  patchUnchecked: 'not checked',
+  patchRestored: 'restored',
+  keySet: 'set',
+  keyUnset: 'missing',
+  panelGalleryTitle: 'Pictures',
+  panelGalleryDesc: 'Everything the bot has drawn. Click a picture to enlarge it; copy the path to forward it to another channel.',
+  panelStatusTitle: 'Status',
+  panelStatusDesc: 'Endpoint, key and disk usage. Changes apply immediately, no restart.',
+  promptDocTitle: 'Environment notes (Image Studio)',
+  promptDocDesc: 'This text travels with the environment prompt and tells the pet how drawing works.',
+  varDir: 'Absolute path of the directory pictures are saved to.',
+  varReady: 'One line about whether drawing works right now (missing key, missing endpoint, or ready).',
+  readyOk: (model) => `ready: ${model}`,
+  readyNoBase: 'no endpoint configured',
+  readyNoKey: 'no API key',
+  timeout: (ms) => `give up after ${Math.round(ms / 1000)}s`,
+  config: {
+    title: 'Image Studio',
+    enabled: 'Enable Image Studio',
+    enabledDesc: 'Turns on the image_draw / image_edit / image_gallery / image_show tools for the bot.',
+    baseUrl: 'Endpoint',
+    baseUrlDesc: 'Root URL of an OpenAI-compatible image API, e.g. https://api.openai.com/v1 or https://api.siliconflow.cn/v1.',
+    keyName: 'Secret name',
+    keyNameDesc: 'Name of the secret in the deployment .env, IMAGE_API_KEY by default. Enter the key itself on the Status panel.',
+    model: 'Model',
+    modelDesc: 'e.g. gpt-image-1, dall-e-3, flux.1-schnell, cogview-3-flash.',
+    size: 'Size',
+    sizeDesc: 'e.g. 1024x1024, 1024x1536, 1536x1024. Empty or auto lets the server decide.',
+    quality: 'Quality',
+    qualityDesc: 'low / medium / high, or standard / hd depending on the provider. auto omits the field.',
+    format: 'File format',
+    formatDesc: 'Used when the response does not carry a format.',
+    timeout: 'Timeout',
+    timeoutDesc: 'How long a single drawing may take.',
+    saveDir: 'Save directory',
+    saveDirDesc: 'Empty means the plugin data directory plus images/.',
+    keep: 'Keep',
+    keepDesc: 'Oldest pictures are pruned above this count; 0 disables pruning.',
+    push: 'Push to Pictures panel',
+    pushDesc: 'Show new pictures live on the Pictures panel. Off only stops the live push; files are still saved.',
+  },
+};
+
+export function text(language = 'zh') {
+  return language === 'en' ? EN : ZH;
+}
+
+/** 控制台的配置组；路径必须落在 `worlds.image.` 段内，且每个键都在 DEFAULTS 里有对应项。 */
+export function configGroup(language = 'zh') {
+  const t = text(language).config;
+  const K = `worlds.${ID}`;
+  return {
+    id: `world:${ID}`,
+    owner: `world:${ID}`,
+    schema: {
+      type: 'object',
+      title: t.title,
+      properties: {
+        [`${K}.enabled`]: { type: 'boolean', title: t.enabled, description: t.enabledDesc, 'x-hot': true },
+        [`${K}.baseUrl`]: { type: 'string', title: t.baseUrl, description: t.baseUrlDesc, 'x-hot': true },
+        [`${K}.apiKeySecret`]: { type: 'string', title: t.keyName, description: t.keyNameDesc },
+        [`${K}.model`]: { type: 'string', title: t.model, description: t.modelDesc, 'x-hot': true },
+        [`${K}.size`]: { type: 'string', title: t.size, description: t.sizeDesc, 'x-hot': true },
+        [`${K}.quality`]: {
+          type: 'string',
+          title: t.quality,
+          description: t.qualityDesc,
+          enum: ['auto', 'low', 'medium', 'high', 'standard', 'hd'],
+          'x-hot': true,
+        },
+        [`${K}.format`]: {
+          type: 'string',
+          title: t.format,
+          description: t.formatDesc,
+          enum: ['png', 'jpeg', 'webp'],
+          'x-hot': true,
+        },
+        [`${K}.timeoutMs`]: {
+          type: 'integer',
+          title: t.timeout,
+          description: t.timeoutDesc,
+          minimum: 10000,
+          maximum: 900000,
+          multipleOf: 1000,
+          'x-suffix': 'ms',
+          'x-hot': true,
+        },
+        [`${K}.saveDir`]: {
+          type: 'string',
+          title: t.saveDir,
+          description: t.saveDirDesc,
+          'x-path': { kind: 'directory' },
+          'x-hot': true,
+        },
+        [`${K}.keep`]: {
+          type: 'integer',
+          title: t.keep,
+          description: t.keepDesc,
+          minimum: 0,
+          maximum: 5000,
+          multipleOf: 10,
+          'x-suffix': '张',
+        },
+        [`${K}.pushToConsole`]: { type: 'boolean', title: t.push, description: t.pushDesc, 'x-hot': true },
+      },
+    },
+  };
+}

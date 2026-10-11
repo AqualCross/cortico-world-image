@@ -1,0 +1,35 @@
+{
+  "name": "cortico-world-image",
+  "version": "0.1.1",
+  "type": "module",
+  "description": "Image Studio — a cortico World extension that lets the bot draw pictures through any OpenAI-compatible image API, keep them on disk and show them in the console.",
+  "license": "MIT",
+  "author": "coopanion",
+  "keywords": [
+    "cortico-world",
+    "cortico",
+    "coopanion",
+    "image",
+    "image-generation",
+    "text-to-image"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "dist",
+    "ENV_PROMPT.md",
+    "README.md"
+  ],
+  "cortico": {
+    "kind": "world",
+    "api": 5,
+    "displayName": "图片工坊",
+    "consoleClient": "dist/console.js"
+  }
+}
